@@ -16,7 +16,6 @@ setup(
         "pyfiglet",
         "tabulate",
         "PyPDF2",
-        "json",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
