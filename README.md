@@ -6,7 +6,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/release/python-370/)
 
-*LongChatGPT is a tool for inputting long contents to [ChatGPT](https://chat.openai.com/). Note that this repository is extended repository of [PaperSumGPT](https://github.com/wjgoarxiv/PaperSumGPT). If you want to perform a same task as PaperSumGPT, use the `initial prompt` entitled `Abbreviator`, and `final prompt` entitled `Paper-abbreviation`.*
+*LongChatGPT is a tool for inputting __long contents to [ChatGPT](https://chat.openai.com/)__. Note that this repository is extended repository of [PaperSumGPT](https://github.com/wjgoarxiv/PaperSumGPT). If you want to perform a same task as PaperSumGPT, use the `initial prompt` entitled `Abbreviator`, and `final prompt` entitled `Paper-abbreviation`.*
 
 > *(What are __initial & final prompts__? See [(2) Run `longchatgpt` to toss long contents to ChatGPT](#2-run-longchatgpt-to-toss-long-contents-to-chatgpt))*
 
@@ -232,7 +232,7 @@ INFO: Let's select the initial prompt. Choose a method to select the initial pro
 5. Exit
 Enter your choice:
 ```
-As terminal asks, we can choose the way to input the *initial prompt* to ChatGPT. As the writer of [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts) mentioned, giving the role to ChatGPT is a good way to get the desired outputs. One of the best ways to hack ChatGPT is using the magical keyword `act as...`. For instance, if I want to get the desired outputs related to the nutrition, I can make an initial prompt like `Please, act as a nutritionist...`. The `longchatgpt` can manage these initial prompts as JSON format. If this is the first time to run `longchatgpt`, the program will create a JSON file named `initial_prompts.json` in the current directory. Newly formed JSON file looks like the following: 
+As terminal asks, we can choose the way to input the *initial prompt* to ChatGPT. As the writer of [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts) mentioned, giving the role to ChatGPT is a good way to get the desired outputs. One of the best ways to __hack ChatGPT__ is using the magical keyword __`act as...`__. For instance, if I want to get the desired outputs related to the nutrition, I can make an initial prompt like `Please, act as a nutritionist...`. The `longchatgpt` can __manage these initial prompts as JSON format__. If this is the first time to run `longchatgpt`, the program will create a JSON file named `initial_prompts.json` in the current directory. Newly formed JSON file looks like the following: 
 
 ```json
 {
@@ -361,10 +361,10 @@ INFO: Output saved as OUTPUT.md
 ```
 Now, the program will save the output file as `OUTPUT.md` in the current directory. You can check the `demoOUTPUT.md` file in the `demo` directory. 
 
-Note that ChatGPT sometimes makes undesired outputs. In this case, you should try a few times to get the best result. You can revise prompts or intermediate chat contents, you can visit [ChatGPT official website](https://chat.openai.com). Good luck with your works! 💪🏻
+__Note that ChatGPT sometimes makes unexpected outputs!__ In this case, you should __try a few more times__ to get the best result. You can revise prompts or intermediate chat contents, you can visit [ChatGPT official website](https://chat.openai.com). Good luck with your works! 💪🏻
 
 ## Contributing 
-To enhance the `longchatgpt` program, please share your initial & final prompt ideas, and your feedbacks. Use `Pull Requests` to contribute to the project. The power of collective intelligence would be the best way to improve the program! 🔌
+#### To enhance the `longchatgpt` program, please share your initial & final prompt ideas, and your feedbacks. Use `Pull Requests` to contribute to the project. The power of collective intelligence would be the best way to improve the program! 🔌
 
 ## Dependencies
 
