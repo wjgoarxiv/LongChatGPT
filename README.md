@@ -6,7 +6,9 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/release/python-370/)
 
-*LongChatGPT is a tool for inputting long contents to [ChatGPT](https://chat.openai.com/).* 
+*LongChatGPT is a tool for inputting long contents to [ChatGPT](https://chat.openai.com/). Note that this repository is extended version of [PaperSumGPT](https://github.com/wjgoarxiv/PaperSumGPT). If you want to perform a same task as PaperSumGPT, use the `initial prompt` entitled `Abbreviator`, and `final prompt` entitled `Paper-abbreviation`.*
+
+> *(What are __initial & final prompts__? See [(2) Run `longchatgpt` to toss long contents to ChatGPT](#2-run-longchatgpt-to-toss-long-contents-to-chatgpt))*
 
 ## Table of Contents
 - [CAUTION: For ChatGPT free users!](#caution-for-chatgpt-free-users)
