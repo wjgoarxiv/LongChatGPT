@@ -359,7 +359,7 @@ The `longchatgpt` program will ask you to choose the output format. You can choo
 ```text
 INFO: Output saved as OUTPUT.md
 ```
-Now, the program will save the output file as `OUTPUT.md` in the current directory. You can check the `demoOUTPUT.md` file in the `demo` directory. 
+Now, the program will save the output file as `OUTPUT.md` in the current directory. You can check the `[demoOUTPUT.md](demo/demoOUTPUT.md)` file in the `demo` directory to see the demo outputs.
 
 __Note that ChatGPT sometimes makes unexpected outputs!__ In this case, you should __try a few more times__ to get the best result. You can revise prompts or intermediate chat contents, you can visit [ChatGPT official website](https://chat.openai.com). Good luck with your works! 💪🏻
 
