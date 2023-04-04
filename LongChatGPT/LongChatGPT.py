@@ -309,7 +309,7 @@ def main():
         print("2. Select initial prompt")
         print("3. Delete initial prompt")
         print("4. Write initial prompt here")
-        print("4. Exit")
+        print("5. Exit")
         choice = input("Enter your choice: ")
         print("----------------------------------------")
 
