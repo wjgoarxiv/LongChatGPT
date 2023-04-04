@@ -109,7 +109,7 @@ Unfortunately, the free version of ChatGPT cannot understand and store the long 
 You can install LongChatGPT by cloning this repository and install it from the source:
 
 ```bash
-git clone https://github.com/wjgoarxiv/longchatgpt.git
+git clone https://github.com/wjgoarxiv/LongChatGPT.git
 ```
 ```bash
 cd LongChatGPT/
