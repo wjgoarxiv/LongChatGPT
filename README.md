@@ -247,6 +247,7 @@ I'll use the template initial prompt saved in `initial_prompts.json` as an examp
 
 ```text
 INFO: Available roles:
+- Prompt-engineer
 - Abbreviator
 - Essay-writer
 - JailbreakGPT
