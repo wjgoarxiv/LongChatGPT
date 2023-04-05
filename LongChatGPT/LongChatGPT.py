@@ -5,9 +5,7 @@ import pyfiglet
 from tabulate import tabulate
 from chatgpt_wrapper import ChatGPT
 from chatgpt_wrapper.config import Config
-import PyPDF2
 import json
-
 # ------------------ Main code starts ------------------ #
 # Print the title 
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -28,10 +26,10 @@ def main():
     file_type = int(input("""INFO: Please type the number the file type that you want to use:
 
     1. Markdown (`.md`) file
-    2. PDF (`.pdf`) file
-    3. Text (`.txt`) file 
+    2. Text (`.txt`) file 
 
-    Note that the option 2 would convert the PDF file to a markdown file using the `PyPDF2` package: """))
+    : """))
+    
     print('\n')
     print('------------------------------------------------')
 
@@ -42,11 +40,6 @@ def main():
         file_list.sort()
 
     elif file_type == 2:
-        file_list = glob.glob('./*.pdf')
-        file_list = [file.split('\\')[-1] for file in file_list]
-        file_list.sort()
-
-    elif file_type == 3:
         file_list = glob.glob('./*.txt')
         file_list = [file.split('\\')[-1] for file in file_list]
         file_list.sort()
@@ -235,33 +228,6 @@ def main():
 
         if not os.path.exists(final_prompts_file_path):
             save_final_prompts(final_prompts_file_path, default_final_prompts)
-
-    # ------------------ Convert pdf to md ------------------ #
-    # If user enters the PDF file, convert the PDF file to a markdown file.
-    # But prepared markdown would make a better result. 
-
-    def extract_text_from_pdf(pdf_file: str) -> [str]:
-        with open(pdf_file, 'rb') as pdf:
-            reader = PyPDF2.PdfReader(pdf, strict=False)
-            pdf_text = []
-
-            for page in reader.pages:
-                content = page.extract_text()
-                pdf_text.append(content)
-
-            return pdf_text
-        
-    if file_type == 2:
-        print('INFO: Converting the PDF file to a markdown file...')
-        pdf_text = extract_text_from_pdf(file_list[user_input-1])
-
-        with open(file_list[user_input-1] + '_markdowned.md', 'w') as f:
-            for line in pdf_text:
-                f.write(line)
-
-        file_list[user_input-1] = file_list[user_input-1] + '_markdowned.md'
-        print('INFO: The PDF file has been converted to a markdown file.')
-        print('------------------------------------------------')
 
     # ------------------ Function starts ------------------ #
     # Initialize ChatGPT
