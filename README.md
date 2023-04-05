@@ -11,7 +11,8 @@
 > *(What are __initial & final prompts__? See [(2) Run `longchatgpt` to toss long contents to ChatGPT](#2-run-longchatgpt-to-toss-long-contents-to-chatgpt))*
 
 ## Table of Contents
-- [CAUTION: For ChatGPT free users!](#caution-for-chatgpt-free-users)
+- [CAUTION 1: For ChatGPT free users!](#caution-for-chatgpt-free-users)
+- [CAUTION 2: PDF converting functionality deprecated!](#caution-2-pdf-converting-functionality-deprecated)
 - [How to Install](#how-to-install)
   - [(0) For Windows users (first time only!)](#0-for-windows-users-first-time-only)
   - [(1) Clone this repository](#1-clone-this-repository)
@@ -25,7 +26,7 @@
 - [Dependencies](#dependencies)
 - [License](#license)
 
-## CAUTION: For ChatGPT free users!
+## CAUTION 1: For ChatGPT free users!
 > [2023-04-04 updated]
 
 After I tested with several accounts with ChatGPT, I found that there were __significant differences in the performance of ChatGPT__ depending whether the account is a free user or a paid user (*ChatGPT Plus*).
@@ -33,6 +34,14 @@ After I tested with several accounts with ChatGPT, I found that there were __sig
 If you are a free user of ChatGPT, and you have a long paper to summarize, I recommend you to (1) upgrade your account to __[ChatGPT Plus](https://openai.com/blog/chatgpt-plus)__, or (2) repeat the input process several times to get better results.
 
 Unfortunately, the free version of ChatGPT cannot understand and store the long context of the input text, which leads to a poor performance.
+
+## CAUTION 2: PDF converting functionality deprecated!
+> [2023-04-05 updated]
+
+Even though I tried to make the PDF converting functionality work, I failed to do so (I tried `PyPDF2`, `pdfminer`, and `pdfplumber`). The problem is that **the converted markdown is NOT well-formatted, which leads to a poor results** from ChatGPT. 
+
+I rather recommend you to just __manually copy and paste the contents by dragging the mouse. And then, paste them into a new input text file.__ This makes much better results than the PDF converting functionality. Sorry for your inconvenience. 
+
 
 ## How to Install
 
@@ -170,21 +179,20 @@ The following message would be shown:
 INFO: Please type the number the file type that you want to use:
 
     1. Markdown (`.md`) file
-    2. PDF (`.pdf`) file
-    3. Text (`.txt`) file
+    2. Text (`.txt`) file
 
-    Note that the option 2 would convert the PDF file to a markdown file using the `PyPDF2` package:
+: 
 ```
-Depending on your file type, you can choose the corresponding option. For demonstration, I'll use the following article published in [Healthline](https://www.healthline.com/nutrition/best-ways-to-get-abs). I just manually downloaded the web article into PDF file. Please refer to the `demoinput.pdf` file in the repository that I uploaded. Check your cloned repository to see the file. (~~Note that this article is about how to get **abs** 😂~~)
+Depending on your file type, you can choose the corresponding option. For demonstration, I'll use the following article published in [Healthline](https://www.healthline.com/nutrition/best-ways-to-get-abs). I just manually copy all the texts and paste it in a text file named `demoinput.txt` (~~Note that this article is about how to get **abs** 😂~~).
 
-Since we have to input PDF file, we can type `2` and press `Enter` key. 
+Since we prepared a text file, we can type `2` and press `Enter` key. 
 
 ```text
 ------------------------------------------------
 +---------------+-----------------+
 |   File number |    File name    |
 |---------------+-----------------|
-|             1 | ./demoinput.pdf |
+|             1 | ./demoinput.txt |
 +---------------+-----------------+
 ------------------------------------------------
 
@@ -209,16 +217,7 @@ INFO: Please type the number the ChatGPT model that you want to use:
 
     :
 ```
-I typed `1` and pressed `Enter` key. 
-Since the input file was PDF, the program will convert the PDF file to a markdown file using the `PyPDF2` package. The following message would be shown: 
-
-```text
-------------------------------------------------
-INFO: Converting the PDF file to a markdown file...
-INFO: The PDF file has been converted to a markdown file.
-------------------------------------------------
-```
-
+I typed `1` and pressed `Enter` key.
 From now on, we have to **focus on** the following procedures:
 
 ```text
@@ -371,7 +370,6 @@ __Note that ChatGPT sometimes makes unexpected outputs!__ In this case, you shou
 
 - [pyfiglet](https://pypi.org/project/pyfiglet/) - For generating ASCII art of the project name.
 - [tabulate](https://pypi.org/project/tabulate/) - For creating clean and readable tables for the output.
-- [PyPDF2](https://pypi.org/project/PyPDF2/) - For reading and processing PDF files.
 - [chatgpt_wrapper](https://github.com/mmabrouk/chatgpt-wrapper) - An useful open-source unofficial Power CLI, Python API and Flask API that lets us interact programmatically with ChatGPT/GPT4. 
 
 ## License
