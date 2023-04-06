@@ -44,6 +44,12 @@ def main():
         file_list = [file.split('\\')[-1] for file in file_list]
         file_list.sort()
 
+    else: 
+        print('ERROR: Your input number is out of range. Please check the file number.')
+        print('ERROR: The program will stop.')
+        print('------------------------------------------------')
+        exit()
+
     # File not found error handling
     try: 
         if len(file_list) == 0:
