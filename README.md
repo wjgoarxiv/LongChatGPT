@@ -35,13 +35,16 @@ If you are a free user of ChatGPT, and you have a long paper to summarize, I rec
 
 Unfortunately, the free version of ChatGPT cannot understand and store the long context of the input text, which leads to a poor performance.
 
-## CAUTION 2: PDF converting functionality deprecated!
-> [2023-04-05 updated]
+## UPDATE: PDF Converting Functionality Revitalized!
+> [2023-04-11 updated]
 
-Even though I tried to make the PDF converting functionality work, I failed to do so (I tried `PyPDF2`, `pdfminer`, and `pdfplumber`). The problem is that **the converted markdown is NOT well-formatted, which leads to a poor results** from ChatGPT. 
+Great news! We have revitalized the PDF converting functionality using `PyTesseract`. Now, our tool is capable of converting PDF inputs into well-formatted markdown format, providing better results with ChatGPT.
 
-I rather recommend you to just __manually copy and paste the contents by dragging the mouse. And then, paste them into a new input text file.__ This makes much better results than the PDF converting functionality. Sorry for your inconvenience. 
+To use this feature, simply provide your PDF file as input, and the tool will automatically convert it into a markdown format that ChatGPT can process effectively.
 
+Please note that the quality of the conversion may depend on the input PDF's clarity and formatting. However, this solution should be a significant improvement over manual copy-pasting and will save you time and effort.
+
+Feel free to try the updated PDF converting functionality and enjoy the enhanced experience with ChatGPT.
 
 ## How to Install
 
