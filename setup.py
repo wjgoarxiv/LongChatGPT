@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="LongChatGPT",
-    version="1.0.0",
+    version="1.1.0",
     author="wjgoarxiv",
     author_email="woo_go@yahoo.com",
     description="A tool to throw long contents to ChatGPT",
@@ -15,17 +15,25 @@ setup(
     install_requires=[
         "pyfiglet",
         "tabulate",
-        "PyPDF2",
+        "numpy",
+        "pandas",
+        "pdf2image",
+        "Pillow",
+        "frontend",
+        "opencv-contrib-python",
+        "fitz",
+        "pytesseract",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     packages=['LongChatGPT'],
     entry_points={
         'console_scripts': [

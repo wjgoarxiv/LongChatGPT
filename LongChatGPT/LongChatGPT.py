@@ -2,10 +2,22 @@
 import os
 import glob
 import pyfiglet
+import numpy as np
+import pandas as pd 
 from tabulate import tabulate
 from chatgpt_wrapper import ChatGPT
 from chatgpt_wrapper.config import Config
 import json
+
+import cv2
+import pytesseract as tess
+from pdf2image import convert_from_path
+from PIL import Image
+
+import sys
+import time
+import threading
+
 # ------------------ Main code starts ------------------ #
 # Print the title 
 os.system('cls' if os.name == 'nt' else 'clear')
@@ -20,15 +32,45 @@ print('\n 📨 woo_go@yahoo.com')
 print('\nVisit https://github.com/wjgoarxiv/longchatgpt for more information.')
 print('------------------------------------------------')
 
+# Showing spinning_wheel effect
+
+def spinning_wheel(message, stop_event):
+    wheel = ['-', '\\', '|', '/']
+    i = 0
+    while not stop_event.is_set():
+        sys.stdout.write('\r' + str(message) + ' ' + str(wheel[i % len(wheel)]))
+        sys.stdout.flush()
+        time.sleep(0.05)
+        i += 1
+    sys.stdout.write('\r' + ' ' * (len(message) + 2) + '\r')
+    sys.stdout.flush()
+
+# ANSI escape code for printing in color 
+def print_bold_message(bold_word, message):
+    # ANSI escape code to start bold formatting
+    start_bold = '\033[1m'
+    # ANSI escape code to end bold formatting
+    end_bold = '\033[0m'
+
+    formatted_message = message.replace(bold_word, start_bold + bold_word + end_bold)
+    return formatted_message
+
 def main():
     # Ask user if the brought input file is a markdown file or PDF file 
     print('\n')
-    file_type = int(input("""INFO: Please type the number the file type that you want to use:
+    bold_word_file_type = "INFO: Please type the number the file type that you want to use:"
+    file_type_message = """INFO: Please type the number the file type that you want to use:
 
     1. Markdown (`.md`) file
     2. Text (`.txt`) file 
+    3. PDF (`.pdf.`) file 
 
-    : """))
+    : """
+
+    formatted_file_type_message = print_bold_message(bold_word_file_type, file_type_message)
+
+    # Getting the user input
+    file_type = int(input(formatted_file_type_message))
     
     print('\n')
     print('------------------------------------------------')
@@ -42,11 +84,27 @@ def main():
     elif file_type == 2:
         file_list = glob.glob('./*.txt')
         file_list = [file.split('\\')[-1] for file in file_list]
+        file_list.sort() 
+
+    elif file_type == 3: 
+        file_list = glob.glob('./*.pdf')
+        file_list = [file.split('\\')[-1] for file in file_list]
         file_list.sort()
 
-    else: 
-        print('ERROR: Your input number is out of range. Please check the file number.')
-        print('ERROR: The program will stop.')
+    # File not found error handling
+    try: 
+        if len(file_list) == 0:
+            raise FileNotFoundError
+        else:
+            pass
+
+    # Alert the user
+    except:
+        bold_no_file = "ERROR: There is no file in the current directory. Please check the current directory."
+        no_file_message = "ERROR: There is no file in the current directory. Please check the current directory."
+
+        formatted_no_file_message = print_bold_message(bold_no_file, no_file_message)
+        print(formatted_no_file_message)
         print('------------------------------------------------')
         exit()
 
@@ -59,7 +117,10 @@ def main():
 
     # Alert the user 
     except: 
-        print('ERROR: There is no file in the current directory. Please check the current directory.')
+        bold_no_file = "ERROR: There is no file in the current directory. Please check the current directory."
+        no_file_message = "ERROR: There is no file in the current directory. Please check the current directory."
+
+        formatted_no_file_message = print_bold_message(bold_no_file, no_file_message)
         print('------------------------------------------------')
         exit()
 
@@ -69,7 +130,13 @@ def main():
         file_num.append(i+1)
     print(tabulate({'File number': file_num, 'File name': file_list}, tablefmt='psql', headers='keys', stralign='center'))
     print('------------------------------------------------')
-    user_input = int(input('\nINFO: Please select the file number or press "0" to exit: '))
+
+    file_number_select_bold = "INFO: Please select the file number or press `0` to exit: "
+    file_number_select_message = "INFO: Please select the file number or press `0` to exit: "
+
+    formatted_file_number_select_message = print_bold_message(file_number_select_bold, file_number_select_message)
+
+    user_input = int(input(formatted_file_number_select_message))
 
     if user_input == 0:
         print("INFO: Exiting the program.")
@@ -85,23 +152,38 @@ def main():
     # Ask user to turn on `verbose` mode. 
     # If the user turns on `verbose` mode, the program will print the intermediate results.
     print('\n------------------------------------------------')
-    verbose = input("INFO: Do you want to turn on `verbose` mode? If you turn on `verbose` mode, the program will print the intermediate results. (y/n): ")
+
+    print_verbose_bold = "INFO: Do you want to turn on `verbose` mode? If you turn on `verbose` mode, the program will print the intermediate results. (y/n): "
+    print_verbose_message = "INFO: Do you want to turn on `verbose` mode? If you turn on `verbose` mode, the program will print the intermediate results. (y/n): "
+
+    formatted_print_verbose_message = print_bold_message(print_verbose_bold, print_verbose_message)
+
+    verbose = str(input(formatted_print_verbose_message))
     if verbose == 'y' or verbose == 'Y':
         verbose = True
     elif verbose == 'n' or verbose == 'N':
         verbose = False
+    else:
+        print("ERROR: Your input is not valid. Please type `y` or `n`.")
+        print("ERROR: The program will stop.")
+        exit()
     print('------------------------------------------------')
 
     # Ask user their desired ChatGPT model
-    chatgpt_model = input("""INFO: Please type the number the ChatGPT model that you want to use:
+
+    ask_chatgpt_model_bold = "INFO: Please type the number the ChatGPT model that you want to use:"
+    ask_chatgpt_model_message = """INFO: Please type the number the ChatGPT model that you want to use:
 
     1. default (Turbo version for ChatGPT Plus users and default version for free users)
     2. gpt4 (Only available for ChatGPT Plus users; a little bit slower than the default model)
     3. legacy (Only available for ChatGPT Plus users; an older version of the default model)
 
     Note that the option 2 and 3 are NOT available for free users. If you are the free user, please select the option 1
-    
-    : """)
+
+    : """
+
+    formatted_ask_chatgpt_model_message = print_bold_message(ask_chatgpt_model_bold, ask_chatgpt_model_message)
+    chatgpt_model = input(formatted_ask_chatgpt_model_message)
                         
     if chatgpt_model == '1':
         chatgpt_model = 'default'
@@ -110,10 +192,78 @@ def main():
     elif chatgpt_model == '3':
         chatgpt_model = 'legacy'
     else:
-        print("ERROR: Your input number is out of range. Please check the file number.")
-        print("ERROR: The program will stop.")
+        print_input_number_out_of_range_bold = "ERROR: Your input number is out of range. Please check the file number. \n ERROR: The program will stop."
+        print_input_number_out_of_range_message = "ERROR: Your input number is out of range. Please check the file number. \n ERROR: The program will stop."
+
+        formatted_print_input_number_out_of_range_message = print_bold_message(print_input_number_out_of_range_bold, print_input_number_out_of_range_message)
         exit()
     print('------------------------------------------------')
+
+    # ------------------ Convert pdf to markdown ------------------ #
+    # This process requires following processes:
+    # 1. Convert pdf to images
+    # 2. Perform OCR on the images
+    # 3. Convert the images to markdown file 
+
+    def pdf_to_images(pdf_file):
+        return convert_from_path(pdf_file, 500)
+    
+    def process_image(image):
+        # Convert PIL image to OpenCV image
+        original_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
+        _, threshold_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+        rectangular_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (11, 11))
+        dilated_image = cv2.dilate(threshold_image, rectangular_kernel, iterations=1)
+
+        contours, hierarchy = cv2.findContours(dilated_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        copied_image = original_image.copy() 
+
+        ocr_text = ""
+
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            cropped = copied_image[y:y + h, x:x + w]
+            text = tess.image_to_string(cropped, config='--oem 3 --psm 1') # Perform OCR on the cropped image
+            ocr_text += text
+        return ocr_text
+
+    def perform_ocr(images): 
+        ocr_text = ""
+        for i, image in enumerate(images): 
+            text = process_image(image)
+            ocr_text += f"\n{text}\n\n"
+        return ocr_text
+    
+    if file_type == 3:
+        bold_word = "INFO: Converting the PDF file to a markdown file..."
+        message = "INFO: Converting the PDF file to a markdown file..."
+        formatted_message = print_bold_message(bold_word, message)
+        
+        stop_event = threading.Event()
+        spinner = threading.Thread(target=spinning_wheel, args=(formatted_message, stop_event))
+        spinner.daemon = True
+        spinner.start()
+
+        pdf_text = perform_ocr(pdf_to_images(file_list[user_input-1]))
+
+        with open(file_list[user_input-1] + '_markdowned.md', 'w', encoding='utf-8') as f: 
+            for line in pdf_text:
+                f.write(line)
+            
+        file_list[user_input-1] = file_list[user_input-1] + '_markdowned.md'
+
+        # ends the spinning wheel with stop_event.set()
+        stop_event.set()
+        spinner.join()
+
+        pdf_converted_to_markdown_bold = "INFO: The PDF file has been converted to a markdown file."
+        pdf_converted_to_markdown_message = "INFO: The PDF file has been converted to a markdown file."
+        formatted_pdf_converted_to_markdown_message = print_bold_message(pdf_converted_to_markdown_bold, pdf_converted_to_markdown_message)
+
+        print(formatted_pdf_converted_to_markdown_message)
+        print('------------------------------------------------')
 
     # ------------------ Manage initial & final prompts ------------------ # 
     # In this section, the user can manage their initial and final prompts.
@@ -266,12 +416,25 @@ def main():
     while True:
         print("\n----------------------------------------")
         print("INFO: Let's select the initial prompt. Choose a method to select the initial prompt.")
+
+        select_initial_prompt_bold = "INFO: Let's select the initial prompt. Choose a method to select the initial prompt." 
+        select_initial_prompt_message = "INFO: Let's select the initial prompt. Choose a method to select the initial prompt."
+        
+        formatted_select_initial_prompt = print_bold_message(select_initial_prompt_bold, select_initial_prompt_message)
+
         print("\n1. Add custom initial prompt")
         print("2. Select initial prompt")
         print("3. Delete initial prompt")
         print("4. Write initial prompt here")
         print("5. Exit")
-        choice = input("Enter your choice: ")
+
+        select_enter_your_choice_bold = "\nEnter your choice: "
+        select_enter_your_choice_message = "\nEnter your choice: "
+
+        formatted_select_enter_your_choice = print_bold_message(select_enter_your_choice_bold, select_enter_your_choice_message)
+
+        choice = input(formatted_select_enter_your_choice)
+
         print("----------------------------------------")
 
         if choice == "1":
@@ -299,10 +462,19 @@ def main():
     initial_prompt = selected_initial_prompt
 
     # send initial prompt message to ChatGPT
-    print("\nINFO: Tossing initial prompt...")
+    tossing_initial_prompt_bold = "\nINFO: Tossing initial prompt..."
+    tossing_initial_prompt_message = "\nINFO: Tossing initial prompt..."
+    formatted_tossing_initial_prompt = print_bold_message(tossing_initial_prompt_bold, tossing_initial_prompt_message)
+    print(formatted_tossing_initial_prompt)
+
     success, response, message = bot.ask(initial_prompt)
     if success:
-        print(f"INFO: ChatGPT started consuming all the input contents...")
+        consuming_input_contents_bold = "INFO: ChatGPT started consuming all the input contents..."
+        consuming_input_contents_message = "INFO: ChatGPT started consuming all the input contents..."
+
+        formatted_consuming_input_contents = print_bold_message(consuming_input_contents_bold, consuming_input_contents_message)
+
+        print(formatted_consuming_input_contents)
     else:
         raise RuntimeError(message)
 
@@ -313,10 +485,17 @@ def main():
     for i, part in enumerate(input_parts):
         if i == len(input_parts) - 1:
             prompt = f"This is the ({i+1}/{len(input_parts)}) part of the truncated input contents. And PLEASE! Do NOT answer and if you understood the input, just keep asking me to input the leftover contents.\n\n```\n{part}\n```\nThank you for consuming all the inputs."
+
         else:
             prompt = f"This is the ({i+1}/{len(input_parts)}) part of the truncated input contents. And PLEASE! Do NOT answer and if you understood the input, just keep asking me to input the leftover contents.\n\n```\n{part}\n```\n"
 
-        print(f"INFO: Waiting for ChatGPT to respond for {i+1}/{len(input_parts)} part(s)...")
+        progressing_bold = f"INFO: Progressing... ({i+1}/{len(input_parts)})"
+        progressing_message = f"INFO: Progressing... ({i+1}/{len(input_parts)})"
+        formatted_progressing = print_bold_message(progressing_bold, progressing_message)
+        stop_event_2 = threading.Event()
+        spinner_2 = threading.Thread(target=spinning_wheel, args=(formatted_progressing, stop_event_2))
+        spinner_2.daemon = True
+        spinner_2.start()
 
         # send prompt message and prompt part to ChatGPT
         success, response, message = bot.ask(prompt)
@@ -326,7 +505,9 @@ def main():
             raise RuntimeError(message)
 
         # print status update
-        print(f"INFO: {i+1}/{len(input_parts)} part(s) tossed to ChatGPT.")
+        tossed_to_chatgpt_bold = f"INFO: {i+1}/{len(input_parts)} part(s) tossed to ChatGPT."
+        tossed_to_chatgpt_message = f"INFO: {i+1}/{len(input_parts)} part(s) tossed to ChatGPT."
+        formatted_tossed_to_chatgpt = print_bold_message(tossed_to_chatgpt_bold, tossed_to_chatgpt_message)
 
         # Handling the `verbose` mode 
         if verbose == True:
@@ -334,11 +515,18 @@ def main():
             print(f"INFO: Response from ChatGPT: {response}")
         else:
             pass
+        
+        stop_event_2.set()        
+        spinner_2.join()
 
     # Secondly, let the user select the final prompt.
     while True:
         print("\n----------------------------------------")
-        print("INFO: Next, let's select the final prompt. Choose a method to select the final prompt.")
+
+        select_final_prompt_bold = "INFO: Next, let's select the final prompt. Choose a method to select the final prompt."
+        select_final_prompt_message = "INFO: Next, let's select the final prompt. Choose a method to select the final prompt."
+        formatted_select_final_prompt = print_bold_message(select_final_prompt_bold, select_final_prompt_message)
+        print(formatted_select_final_prompt)
         print("\n1. Add custom final prompt")
         print("2. Select final prompt")
         print("3. Delete final prompt")
@@ -374,7 +562,11 @@ def main():
     final_prompt = selected_final_prompt
 
     # send final prompt message to ChatGPT
-    print("\nINFO: Tossing final prompt...")
+    
+    tossing_final_prompt_bold = "\nINFO: Tossing final prompt..."
+    tossing_final_prompt_message = "\nINFO: Tossing final prompt..."
+    formatted_tossing_final_prompt = print_bold_message(tossing_final_prompt_bold, tossing_final_prompt_message)
+    print(formatted_tossing_final_prompt)
 
     # join response parts to form final response
     final_response = response_parts[-1]
@@ -385,18 +577,30 @@ def main():
         print(f"INFO: Response from ChatGPT: {response}")
     else:
         raise RuntimeError(message)
-
+    
     count_yes = 0
     again_final_prompt_base = "I think you are not done yet. Please input the leftover contents."
 
     # Create a variable to store the concatenated responses
     concatenated_responses = ""
 
+    tossed_final_prompt_bold = "\nINFO: It seems like ChatGPT generated the final response."
+    tossed_final_prompt_message = "\nINFO: It seems like ChatGPT generated the final response."
+    formatted_tossed_final_prompt = print_bold_message(tossed_final_prompt_bold, tossed_final_prompt_message)
+    print(formatted_tossed_final_prompt)
+
     while True:
-        user_input = input("\nINFO: Does the answer seem to be truncated? (y/n): ")
+        user_input_truncated_bold = "\nINFO: Does the answer seem to be truncated? (y/n): "
+        user_input_truncated_message = "\nINFO: Does the answer seem to be truncated? (y/n): "
+        formatted_user_input_truncated = print_bold_message(user_input_truncated_bold, user_input_truncated_message)
+        user_input = input(formatted_user_input_truncated)
         if user_input.strip().lower() == "y":
             count_yes += 1
-            print("\nINFO: Tossing final prompt again...")
+
+            tossing_final_prompt_again_bold = "\nINFO: Tossing final prompt again..."
+            tossing_final_prompt_again_message = "\nINFO: Tossing final prompt again..."
+            formatted_tossing_final_prompt_again = print_bold_message(tossing_final_prompt_again_bold, tossing_final_prompt_again_message)
+            print(formatted_tossing_final_prompt_again)
             last_response_part = response.strip().split()[-1]  # Get the last part of the response
             again_final_prompt = f"{again_final_prompt_base}" + "\n" + "However, keep in mind that you SHOULD NOT PRINT THE TEMPLATE that I gave you now on; JUST KEEP GENERATING from the truncated part. NEVER RESTART the conversation. Thank you."
             success, response, message = bot.ask(again_final_prompt)
@@ -419,25 +623,13 @@ def main():
     final_response = final_response + "\n" + concatenated_responses
 
     # prompt user to choose output format
-    output_format = input("\nINFO: Choose output format (stream / txt / md): ")
+    output_format_bold = "\nINFO: Choose output format (stream / txt / md): "
+    output_format_message = "\nINFO: Choose output format (stream / txt / md): "
+    formatted_output_format = print_bold_message(output_format_bold, output_format_message)
+    output_format = str(input(formatted_output_format))
 
     # define maximum length of each response part to be printed at once
     max_response_length = 3000
-
-    if output_format.lower() == "stream":
-        # print response parts until the full response is generated
-        i = 0
-        while i < len(final_response):
-            # print next response part
-            response_part = final_response[i:i+max_response_length]
-            print(response_part)
-            i += len(response_part)
-
-            # if there are more response parts, ask the user to continue
-            if i < len(final_response):
-                user_input = input("INFO: Press enter to continue or type 'quit' to exit: ")
-                if user_input.strip().lower() == "quit":
-                    break
 
     # Export the file name as output.txt or output.md
     while True: 
@@ -452,6 +644,11 @@ def main():
             with open("OUTPUT.md", "w") as f:
                 f.write(f"\n{final_response}\n")
             print("INFO: Output saved as OUTPUT.md")
+            break
+        elif output_format.lower() == "stream":
+            # print response to the console
+            print("INFO: Output:")
+            print(final_response)
             break
         else:
             print("ERROR: Invalid output format selected. Please choose 'stream', 'txt', or 'md'.")
