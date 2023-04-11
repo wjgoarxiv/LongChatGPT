@@ -12,7 +12,7 @@
 
 ## Table of Contents
 - [CAUTION 1: For ChatGPT free users!](#caution-for-chatgpt-free-users)
-- [UPDATE: PDF converting functionality deprecated!](#update-pdf-converting-functionality-deprecated)
+- [UPDATE: PDF Converting Functionality Revitalized!](#update-pdf-converting-functionality-revitalized)
 - [How to Install](#how-to-install)
   - [(0) For Windows users (first time only!)](#0-for-windows-users-first-time-only)
   - [(1) Clone this repository](#1-clone-this-repository)
