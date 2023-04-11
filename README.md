@@ -38,7 +38,7 @@ Unfortunately, the free version of ChatGPT cannot understand and store the long 
 ## UPDATE: PDF Converting Functionality Revitalized!
 > [2023-04-11 updated]
 
-Great news! We have revitalized the PDF converting functionality using `PyTesseract`. Now, our tool is capable of converting PDF inputs into well-formatted markdown format, providing better results with ChatGPT.
+Great news! I have revitalized the PDF converting functionality using `PyTesseract`. Now, this tool is capable of converting PDF inputs into well-formatted markdown format, providing better results with ChatGPT.
 
 To use this feature, simply provide your PDF file as input, and the tool will automatically convert it into a markdown format that ChatGPT can process effectively.
 
