@@ -47,9 +47,9 @@ def spinning_wheel(message, stop_event):
 
 # ANSI escape code for printing in color 
 def print_bold_message(bold_word, message):
-    # ANSI escape code to start bold formatting
-    start_bold = '\033[1m'
-    # ANSI escape code to end bold formatting
+    # ANSI escape code to start bold formatting + red color formatting
+    start_bold = '\033[31;1;m'
+    # ANSI escape code to end bold formatting + red color formatting
     end_bold = '\033[0m'
 
     formatted_message = message.replace(bold_word, start_bold + bold_word + end_bold)
